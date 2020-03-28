@@ -27,3 +27,15 @@ def getMinMaxDate(cases_df):
     max_date = cases_df['Date'].max()
     return min_date, max_date
 
+def getPerDay(df, countries):
+    #Get per day deaths from difference in cumulative for each country.
+    per_day_df = pd.DataFrame(columns=['Country/Region','Date','Value','Type','Diff'])
+    for country in countries:
+        country_df = df[df['Country/Region']==country]
+        diff_series = df[df['Country/Region']==country]['Value'].diff()
+        temp_df = pd.concat([country_df, diff_series],axis=1)
+        #Rename columns
+        temp_df.columns = ['Country/Region','Date','Value','Type','Diff']
+        per_day_df = per_day_df.append(temp_df)
+    return per_day_df
+
