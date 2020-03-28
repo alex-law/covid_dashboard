@@ -32,7 +32,7 @@ app.layout = html.Div([
                 id='display-country',
                 options=[{'label': i, 'value': i} for i in countries],
                 multi=True,
-                value='United Kingdom'
+                value=['United Kingdom']
             ),
             dcc.Checklist(
                 id='deaths-cases',
@@ -51,7 +51,7 @@ app.layout = html.Div([
                 min_date_allowed=cases_df['Date'].min(),
                 max_date_allowed=cases_df['Date'].max(),
                 initial_visible_month='2020-03-22',
-                end_date='2020-03-22'
+                end_date=cases_df['Date'].max()
             ),
             dcc.RadioItems(
                 id='per-day-cum',
