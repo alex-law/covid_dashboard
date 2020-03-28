@@ -21,8 +21,11 @@ cases_df['Type'] = 'Cases'
 
 #Get input options.
 countries = getCountries(cases_df)
-#min_date, max_date = getMinMaxDate(cases_df)
-#min_date = '2020-01-22'
+min_date, max_date = getMinMaxDate(cases_df)
+
+#Get per day column
+deaths_df = getPerDay(deaths_df, countries)
+cases_df = getPerDay(cases_df, countries)
 
 app.layout = html.Div([
     html.Div([
@@ -48,8 +51,8 @@ app.layout = html.Div([
         html.Div([
             dcc.DatePickerRange(
                 id='date-picker-range',
-                min_date_allowed=cases_df['Date'].min(),
-                max_date_allowed=cases_df['Date'].max(),
+                min_date_allowed=min_date,
+                max_date_allowed=max_date,
                 initial_visible_month='2020-03-22',
                 end_date=cases_df['Date'].max()
             ),
@@ -89,16 +92,21 @@ app.layout = html.Div([
      Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date')])
 def update_graph(display_countries, per_day_cum,
-                 lin_log, deaths_cases, min_date, max_date):
+                 lin_log, deaths_cases, min_d, max_d):
 
     
     #Drop out of range dates.
-    deaths_drop_index = deaths_df[(deaths_df['Date'] < min_date) | (deaths_df['Date'] > max_date)].index
-    cases_drop_index = cases_df[(cases_df['Date'] < min_date) | (cases_df['Date'] > max_date)].index
+    deaths_drop_index = deaths_df[(deaths_df['Date'] < min_d) | (deaths_df['Date'] > max_d)].index
+    cases_drop_index = cases_df[(cases_df['Date'] < min_d) | (cases_df['Date'] > max_d)].index
     deaths_dff = deaths_df.drop(deaths_drop_index)
     cases_dff = cases_df.drop(cases_drop_index)
-    deaths_dff['Datetime'] = pd.to_datetime(deaths_dff['Date'])
-    cases_dff['Datetime'] = pd.to_datetime(cases_dff['Date'])
+    #deaths_dff['Datetime'] = pd.to_datetime(deaths_dff['Date'])
+    #cases_dff['Datetime'] = pd.to_datetime(cases_dff['Date'])
+
+    if per_day_cum == 'per_day':
+        y_axis = 'Diff'
+    elif per_day_cum == 'cumulative':
+        y_axis = 'Value'
 
     traces = []
     for option in deaths_cases:
@@ -111,7 +119,7 @@ def update_graph(display_countries, per_day_cum,
 
             traces.append(dict(
                 x=temp_df[temp_df['Country/Region'] == country]['Date'],
-                y=temp_df[temp_df['Country/Region'] == country]['Value'],
+                y=temp_df[temp_df['Country/Region'] == country][y_axis],
                 text=option,
                 mode='lines+markers',
                 marker={
