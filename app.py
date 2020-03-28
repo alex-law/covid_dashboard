@@ -77,7 +77,7 @@ app.layout = html.Div([
         style={'width': '30%', 'float': 'right', 'display': 'inline-block'})
     ]),
 
-    dcc.Graph(id='indicator-graphic')
+    dcc.Graph(id='indicator-graphic', config={'displayModeBar': False})
 ])
 
 @app.callback(
