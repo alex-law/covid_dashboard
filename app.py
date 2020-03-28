@@ -32,7 +32,7 @@ app.layout = html.Div([
                 id='display-country',
                 options=[{'label': i, 'value': i} for i in countries],
                 multi=True,
-                value='United Kingdom'
+                value=['United Kingdom']
             ),
             dcc.Checklist(
                 id='deaths-cases',
