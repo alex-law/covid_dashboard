@@ -179,6 +179,7 @@ def update_log_log_graph(display_countries, deaths_cases, days_since):
             country_df.reset_index(drop=True, inplace=True)
             country_df.reset_index(inplace=True)
             country_df = country_df.iloc[7:]
+            country_df = country_df[country_df['Value'] >= 30]
 
             traces.append(dict(
                 x=country_df.head(days_since)['Value'],
