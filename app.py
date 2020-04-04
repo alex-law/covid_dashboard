@@ -8,29 +8,14 @@ import requests
 
 from app_functions import *
 
-
-git_url="https://raw.githubusercontent.com/alex-law/covid_dashboard/master/"
-cases_url = git_url + 'covid_cases.csv'
-deaths_url = git_url + 'covid_deaths.csv'
-cases_raw = requests.get(cases_url).content
-cases_df = pd.read_csv(io.StringIO(cases_raw.decode('utf-8')))
-deaths_raw = requests.get(deaths_url).content
-deaths_df = pd.read_csv(io.StringIO(cases_raw.decode('utf-8')))
-
 #Define web app style.
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-#Get data frames.
-deaths_df = formatdf(deaths_df)
-cases_df = formatdf(cases_df)
-deaths_df['Type'] = 'Deaths'
-cases_df['Type'] = 'Cases'
-
-#Get per day column
-countries = getCountries(cases_df)
-deaths_df = getPerDayWeek(deaths_df, countries)
-cases_df = getPerDayWeek(cases_df, countries)
+#Get dataframes from GitHub
+git_url="https://raw.githubusercontent.com/alex-law/covid_dashboard/master/"
+cases_df = getDfFromUrl(git_url, 'covid_cases_cleaned.csv')
+deaths_df = getDfFromUrl(git_url, 'covid_deaths_cleaned.csv')
 
 #Get input options.
 countries = getCountries(cases_df)
