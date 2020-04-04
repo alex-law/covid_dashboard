@@ -53,14 +53,16 @@ app.layout = html.Div([
     html.Div([
 
         html.Div([
-            dcc.Markdown('''**Select Countries**'''),
+            dcc.Markdown('''### Graph 1 and 2
+
+                            **Select Countries**'''),
             dcc.Dropdown(
                 id='display-country',
                 options=[{'label': i, 'value': i} for i in countries],
                 multi=True,
                 value=['United Kingdom']
             ),
-            dcc.Markdown('''
+            dcc.Markdown(''' 
             
                             **Display cases, deaths
                             or both**'''),
@@ -76,15 +78,22 @@ app.layout = html.Div([
         style={'width': '30%', 'float': 'left', 'display': 'inline-block'}),
 
         html.Div([
-            dcc.DatePickerRange(
-                id='date-picker-range',
-                min_date_allowed=min_date,
-                max_date_allowed=max_date,
-                initial_visible_month='2020-03-22',
-                end_date=cases_df['Date'].max()
-            ),
+            dcc.Markdown('''### Graph 1
+
+                            **Linear or Logarithmic**'''),
             dcc.RadioItems(
-                id='per-day-cum',
+                id='lin-log2',
+                options=[
+                    {'label': 'Linear', 'value': 'lin'},
+                    {'label': 'Logarithmic', 'value': 'log'}
+                ],
+                value='lin'
+            ),
+            dcc.Markdown(''' 
+
+                            **Per Day or Cumulative**'''),
+            dcc.RadioItems(
+                id='per-day-cum2',
                 options=[
                     {'label': 'Per Day', 'value': 'per_day'},
                     {'label': 'Cumulative', 'value': 'cumulative'}
@@ -95,6 +104,9 @@ app.layout = html.Div([
         style={'width': '30%', 'display': 'inline-block'}),
 
         html.Div([
+            dcc.Markdown('''### Graph 2
+
+                            **Linear or Logarithmic**'''),
             dcc.RadioItems(
                 id='lin-log',
                 options=[
@@ -102,6 +114,17 @@ app.layout = html.Div([
                     {'label': 'Logarithmic', 'value': 'log'}
                 ],
                 value='lin'
+            ),
+            dcc.Markdown(''' 
+            
+                            **Per Day or Cumulative**'''),
+            dcc.RadioItems(
+                id='per-day-cum',
+                options=[
+                    {'label': 'Per Day', 'value': 'per_day'},
+                    {'label': 'Cumulative', 'value': 'cumulative'}
+                ],
+                value='cumulative'
             )
         ],
         style={'width': '30%', 'float': 'right', 'display': 'inline-block'})
