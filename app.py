@@ -47,25 +47,20 @@ app.layout = html.Div([
     the past week (the growth rate), against the total number of cases/deaths 
     (the population size) we will see a straight line when the relationship is exponential.
     When countries drop off this line, it means they are no longer experiencing an
-    exponential increase in cases/deaths. 
+    exponential increase in cases/deaths.
     '''),
-
+    html.Br(),
     html.Div([
 
         html.Div([
-            dcc.Markdown('''### Graph 1 and 2
-
-                            **Select Countries**'''),
+            dcc.Markdown('''**Graph 1 and 2**'''),
             dcc.Dropdown(
                 id='display-country',
                 options=[{'label': i, 'value': i} for i in countries],
                 multi=True,
                 value=['United Kingdom']
             ),
-            dcc.Markdown(''' 
-            
-                            **Display cases, deaths
-                            or both**'''),
+            html.Br(),
             dcc.Checklist(
                 id='deaths-cases',
                 options=[
@@ -78,9 +73,7 @@ app.layout = html.Div([
         style={'width': '30%', 'float': 'left', 'display': 'inline-block'}),
 
         html.Div([
-            dcc.Markdown('''### Graph 1
-
-                            **Linear or Logarithmic**'''),
+            dcc.Markdown('''**Graph 1**'''),
             dcc.RadioItems(
                 id='lin-log2',
                 options=[
@@ -89,9 +82,7 @@ app.layout = html.Div([
                 ],
                 value='lin'
             ),
-            dcc.Markdown(''' 
-
-                            **Per Day or Cumulative**'''),
+            html.Br(),
             dcc.RadioItems(
                 id='per-day-cum2',
                 options=[
@@ -104,9 +95,7 @@ app.layout = html.Div([
         style={'width': '30%', 'display': 'inline-block'}),
 
         html.Div([
-            dcc.Markdown('''### Graph 2
-
-                            **Linear or Logarithmic**'''),
+            dcc.Markdown('''**Graph 2**'''),
             dcc.RadioItems(
                 id='lin-log',
                 options=[
@@ -115,9 +104,7 @@ app.layout = html.Div([
                 ],
                 value='lin'
             ),
-            dcc.Markdown(''' 
-            
-                            **Per Day or Cumulative**'''),
+            html.Br(),
             dcc.RadioItems(
                 id='per-day-cum',
                 options=[
@@ -130,14 +117,7 @@ app.layout = html.Div([
         style={'width': '30%', 'float': 'right', 'display': 'inline-block'})
     ]),
 
-    dcc.Slider(
-        id='days-since-slider',
-        min=0,
-        max=days_since,
-        step=1,
-        value=30,
-    ),
-    html.Div(id='days-since-text'),
+    html.Br(),
     dcc.RangeSlider(
         id='date-range-slider',
         min=0,
@@ -147,7 +127,8 @@ app.layout = html.Div([
         value=[0, days_since],
         updatemode='drag'
     ),
-    html.Div(id='date-range-text'),
+    dcc.Markdown(id='date-range-text'),
+    html.Br(),
     dcc.Graph(id='indicator-graphic', config={'displayModeBar': False}),
     dcc.Graph(id='log-log-graphic', config={'displayModeBar': False})
 ])
@@ -158,7 +139,7 @@ app.layout = html.Div([
 def update_output(value):
     start_date = cases_df.loc[value[0], 'Date']
     end_date = cases_df.loc[value[1], 'Date']
-    return "{} to {}".format(start_date, end_date)
+    return "**Date Range:** *{}* to *{}*".format(start_date, end_date)
 
 @app.callback(
     Output('indicator-graphic', 'figure'),
@@ -268,13 +249,6 @@ def update_log_log_graph(display_countries, deaths_cases, day_range):
             legend={'x': 0, 'y': 1}
         )
     }
-
-@app.callback(
-    Output('days-since-text', 'children'),
-    [Input('days-since-slider', 'value')])
-def update_output(value):
-    return "{} days since initial outbreak".format(value)
-
 
 if __name__ == '__main__':
     app.run_server(debug=True)
