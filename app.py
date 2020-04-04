@@ -226,8 +226,7 @@ def update_log_log_graph(display_countries, deaths_cases, day_range):
                     'size': 7,
                     'opacity': 0.7,
                     'line': {'width': 0.5, 'color': 'white'}
-                },
-                showLegend=False
+                }
             ))
 
     return {
