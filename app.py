@@ -53,7 +53,7 @@ app.layout = html.Div([
     html.Div([
 
         html.Div([
-            dcc.Markdown('''**Graph 1 and 2**'''),
+            dcc.Markdown('''**Options for Graph 1 and 2**'''),
             dcc.Dropdown(
                 id='display-country',
                 options=[{'label': i, 'value': i} for i in countries],
@@ -70,10 +70,10 @@ app.layout = html.Div([
                 value=['deaths']
             )
         ],
-        style={'width': '30%', 'float': 'left', 'display': 'inline-block'}),
+        style={'width': '45%', 'float': 'left', 'display': 'inline-block'}),
 
         html.Div([
-            dcc.Markdown('''**Graph 1**'''),
+            dcc.Markdown('''**Options for Graph 1**'''),
             dcc.RadioItems(
                 id='lin-log-1',
                 options=[
@@ -92,10 +92,11 @@ app.layout = html.Div([
                 value='cumulative'
             )
         ],
-        style={'width': '30%', 'display': 'inline-block'})
+        style={'width': '45%', 'display': 'inline-block'})
     ]),
 
-    html.Br(),
+    dcc.Graph(id='indicator-graphic', config={'displayModeBar': False}),
+    dcc.Graph(id='log-log-graphic', config={'displayModeBar': False}),
     dcc.RangeSlider(
         id='date-range-slider',
         min=0,
@@ -105,10 +106,7 @@ app.layout = html.Div([
         value=[0, days_since],
         updatemode='drag'
     ),
-    dcc.Markdown(id='date-range-text'),
-    html.Br(),
-    dcc.Graph(id='indicator-graphic', config={'displayModeBar': False}),
-    dcc.Graph(id='log-log-graphic', config={'displayModeBar': False})
+    dcc.Markdown(id='date-range-text')
 ])
 
 @app.callback(
@@ -143,6 +141,8 @@ def update_graph(display_countries, per_day_cum,
     elif per_day_cum == 'cumulative':
         y_axis = 'Value'
 
+    label = getGraph1Label(deaths_cases)
+
     traces = []
     for option in deaths_cases:
         for country in display_countries:
@@ -155,7 +155,7 @@ def update_graph(display_countries, per_day_cum,
             traces.append(dict(
                 x=temp_df[temp_df['Country/Region'] == country]['Date'],
                 y=temp_df[temp_df['Country/Region'] == country][y_axis],
-                text=option,
+                text="{} {}".format(country,option),
                 mode='lines+markers',
                 marker={
                     'size': 15,
@@ -169,7 +169,7 @@ def update_graph(display_countries, per_day_cum,
         'data': traces,
         'layout': dict(
             xaxis={'title': 'Date'},
-            yaxis={'title': 'Deaths', 'type': 'linear' if lin_log == 'lin' else 'log'},
+            yaxis={'title': label, 'type': 'linear' if lin_log == 'lin' else 'log'},
             margin={'l': 40, 'b': 40, 't': 10, 'r': 0},
             hovermode='closest',
             legend={'x': 0, 'y': 1}
@@ -183,49 +183,51 @@ def update_graph(display_countries, per_day_cum,
      Input('date-range-slider', 'value')])
 def update_log_log_graph(display_countries, deaths_cases, day_range):
 
-    #Get date range
-    #min_d = cases_df.loc[day_range[0], 'Date']
-    #max_d = cases_df.loc[day_range[0], 'Date']
+ 
 
     traces = []
+
+    label, min_value = getGraph2Label(deaths_cases)
+
     for option in deaths_cases:
         for country in display_countries:
 
             if option == 'deaths':
                 temp_df = deaths_df
-                min_value = 1
             elif option == 'cases':
                 temp_df = cases_df
-                min_value = 30
 
             country_df = temp_df[temp_df['Country/Region'] == country]
             country_df.sort_values(by=['Date'], inplace=True)
             country_df.reset_index(drop=True, inplace=True)
             country_df.reset_index(inplace=True)
-            country_df_range = country_df[day_range[0]:day_range[1]]
+            country_df = country_df[day_range[0]:day_range[1]]
+            country_df = country_df[country_df['Value'] >= min_value]
 
+            #range=[min_value, country_df['Value'].max()],
             traces.append(dict(
-                x=country_df_range['Value'],
-                y=country_df_range['Week'],
-                text=option,
-                mode='lines+markers',
-                range=[min_value, country_df['Value'].max()],
+                x=country_df['Value'],
+                y=country_df['Week'],
+                mode='lines+markers',   
+                name="{} {}".format(country,option),
+                option="{} {}".format(country,option),
                 marker={
                     'size': 10,
                     'opacity': 0.7,
                     'line': {'width': 0.5, 'color': 'white'}
-                }
+                },
+                showLegend=False
             ))
 
     return {
         'data': traces,
         'layout': dict(
-            xaxis={'title': 'Date', 'type': 'log'},
-            yaxis={'title': 'Deaths', 'type': 'log'},
+            xaxis={'title': '{})'.format(label) if label != ' ' else ' ', 'type': 'log'},
+            yaxis={'title': '{} in past week)'.format(label) if label != ' ' else ' ', 'type': 'log'},
             margin={'l': 40, 'b': 40, 't': 10, 'r': 0},
             hovermode='closest',
             legend={'x': 0, 'y': 1}
-        )
+            )
     }
 
 if __name__ == '__main__':

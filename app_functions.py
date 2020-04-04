@@ -47,3 +47,31 @@ def getCovidDays(min_date, max_date):
     max_datetime = datetime.strptime(max_date, '%Y-%m-%d')
     time_delta = max_datetime - min_datetime
     return time_delta.days
+
+def getGraph1Label(deaths_cases):
+    if len(deaths_cases) == 0:
+        label = ' '
+    elif len(deaths_cases) == 1: 
+        if 'cases' in deaths_cases:
+            label = 'Cases'
+        elif 'deaths' in deaths_cases:
+            label = 'Deaths'
+    elif len(deaths_cases) == 2:
+        label = 'Deaths\Cases'
+    return label
+
+def getGraph2Label(deaths_cases):
+    if len(deaths_cases) == 0:
+        label = ' '
+        min_value = 0
+    elif len(deaths_cases) == 1: 
+        if 'cases' in deaths_cases:
+            label = 'Log(Cases'
+            min_value = 40
+        elif 'deaths' in deaths_cases:
+            label = 'Log(Deaths'
+            min_value = 10
+    elif len(deaths_cases) == 2:
+        label = 'Log(Deaths\Cases'
+        min_value = 40
+    return label, min_value
