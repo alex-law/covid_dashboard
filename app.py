@@ -53,12 +53,17 @@ app.layout = html.Div([
     html.Div([
 
         html.Div([
+            dcc.Markdown('''**Select Countries**'''),
             dcc.Dropdown(
                 id='display-country',
                 options=[{'label': i, 'value': i} for i in countries],
                 multi=True,
                 value=['United Kingdom']
             ),
+            dcc.Markdown('''
+            
+                            **Display cases, deaths
+                            or both**'''),
             dcc.Checklist(
                 id='deaths-cases',
                 options=[
@@ -104,15 +109,33 @@ app.layout = html.Div([
 
     dcc.Slider(
         id='days-since-slider',
-        min = 0,
-        max = days_since,
-        step = 1,
-        value = 30,
+        min=0,
+        max=days_since,
+        step=1,
+        value=30,
     ),
     html.Div(id='days-since-text'),
+    dcc.RangeSlider(
+        id='date-range-slider',
+        min=0,
+        max=days_since,
+        dots=False,
+        step=1,
+        value=[0, days_since],
+        updatemode='drag'
+    ),
+    html.Div(id='date-range-text'),
     dcc.Graph(id='indicator-graphic', config={'displayModeBar': False}),
     dcc.Graph(id='log-log-graphic', config={'displayModeBar': False})
 ])
+
+@app.callback(
+    Output('date-range-text', 'children'),
+    [Input('date-range-slider', 'value')])
+def update_output(value):
+    start_date = cases_df.loc[value[0], 'Date']
+    end_date = cases_df.loc[value[1], 'Date']
+    return "{} to {}".format(start_date, end_date)
 
 @app.callback(
     Output('indicator-graphic', 'figure'),

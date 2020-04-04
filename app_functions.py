@@ -41,10 +41,8 @@ def getPerDayWeek(df, countries):
         per_day_week_df = per_day_week_df.append(temp_df)
     return per_day_week_df
 
-
-
-
 def getCovidDays(min_date, max_date):
+    #Get the number of days since covid start.
     min_datetime = datetime.strptime(min_date, '%Y-%m-%d')
     max_datetime = datetime.strptime(max_date, '%Y-%m-%d')
     time_delta = max_datetime - min_datetime
