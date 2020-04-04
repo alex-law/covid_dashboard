@@ -28,7 +28,28 @@ days_since = getCovidDays(min_date, max_date)
 deaths_df = getPerDayWeek(deaths_df, countries)
 cases_df = getPerDayWeek(cases_df, countries)
 
+#Define webpage layout
 app.layout = html.Div([
+
+    dcc.Markdown('''
+    # Covid-19 Dashboard
+
+    This dashboard takes live data from the 
+    [Johns Hopkins Covid-19 Dataset](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases) 
+    and presents it in two interactive graphs. 
+    
+    **Graph 1** is the standard exponential graph which
+    is often seen in the news.
+
+    **Graph 2** provides an easy way to see if a countries increase in cases/deaths
+    is exponential or not. Exponential growth occurs when the growth rate is proportional
+    to the current population size. This means if we plot the number of cases/deaths in 
+    the past week (the growth rate), against the total number of cases/deaths 
+    (the population size) we will see a straight line when the relationship is exponential.
+    When countries drop off this line, it means they are no longer experiencing an
+    exponential increase in cases/deaths. 
+    '''),
+
     html.Div([
 
         html.Div([
