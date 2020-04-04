@@ -81,14 +81,15 @@ app.layout = html.Div([
         style={'width': '30%', 'float': 'right', 'display': 'inline-block'})
     ]),
 
-    dcc.Graph(id='indicator-graphic', config={'displayModeBar': False}),
     dcc.Slider(
         id='days-since-slider',
         min = 0,
         max = days_since,
         step = 1,
-        value = 5,
+        value = 30,
     ),
+    html.Div(id='days-since-text'),
+    dcc.Graph(id='indicator-graphic', config={'displayModeBar': False}),
     dcc.Graph(id='log-log-graphic', config={'displayModeBar': False})
 ])
 
@@ -171,21 +172,22 @@ def update_log_log_graph(display_countries, deaths_cases, days_since):
 
             if option == 'deaths':
                 temp_df = deaths_df
+                min_value = 1
             elif option == 'cases':
                 temp_df = cases_df
+                min_value = 30
 
             country_df = temp_df[temp_df['Country/Region'] == country]
             country_df.sort_values(by=['Date'], inplace=True)
             country_df.reset_index(drop=True, inplace=True)
             country_df.reset_index(inplace=True)
-            country_df = country_df.iloc[7:]
-            country_df = country_df[country_df['Value'] >= 30]
 
             traces.append(dict(
                 x=country_df.head(days_since)['Value'],
                 y=country_df.head(days_since)['Week'],
                 text=option,
                 mode='lines+markers',
+                range=[min_value, country_df['Value'].max()],
                 marker={
                     'size': 10,
                     'opacity': 0.7,
@@ -203,6 +205,12 @@ def update_log_log_graph(display_countries, deaths_cases, days_since):
             legend={'x': 0, 'y': 1}
         )
     }
+
+@app.callback(
+    Output('days-since-text', 'children'),
+    [Input('days-since-slider', 'value')])
+def update_output(value):
+    return "{} days since initial outbreak".format(value)
 
 
 if __name__ == '__main__':
