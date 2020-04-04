@@ -75,29 +75,7 @@ app.layout = html.Div([
         html.Div([
             dcc.Markdown('''**Graph 1**'''),
             dcc.RadioItems(
-                id='lin-log2',
-                options=[
-                    {'label': 'Linear', 'value': 'lin'},
-                    {'label': 'Logarithmic', 'value': 'log'}
-                ],
-                value='lin'
-            ),
-            html.Br(),
-            dcc.RadioItems(
-                id='per-day-cum2',
-                options=[
-                    {'label': 'Per Day', 'value': 'per_day'},
-                    {'label': 'Cumulative', 'value': 'cumulative'}
-                ],
-                value='cumulative'
-            )
-        ],
-        style={'width': '30%', 'display': 'inline-block'}),
-
-        html.Div([
-            dcc.Markdown('''**Graph 2**'''),
-            dcc.RadioItems(
-                id='lin-log',
+                id='lin-log-1',
                 options=[
                     {'label': 'Linear', 'value': 'lin'},
                     {'label': 'Logarithmic', 'value': 'log'}
@@ -112,6 +90,19 @@ app.layout = html.Div([
                     {'label': 'Cumulative', 'value': 'cumulative'}
                 ],
                 value='cumulative'
+            )
+        ],
+        style={'width': '30%', 'display': 'inline-block'}),
+
+        html.Div([
+            dcc.Markdown('''**Graph 2**'''),
+            dcc.RadioItems(
+                id='lin-log-2',
+                options=[
+                    {'label': 'Linear', 'value': 'lin'},
+                    {'label': 'Logarithmic', 'value': 'log'}
+                ],
+                value='log'
             )
         ],
         style={'width': '30%', 'float': 'right', 'display': 'inline-block'})
@@ -145,7 +136,7 @@ def update_output(value):
     Output('indicator-graphic', 'figure'),
     [Input('display-country', 'value'),
      Input('per-day-cum', 'value'),
-     Input('lin-log', 'value'),
+     Input('lin-log-1', 'value'),
      Input('deaths-cases', 'value'),
      Input('date-range-slider', 'value')])
 def update_graph(display_countries, per_day_cum,
@@ -191,7 +182,7 @@ def update_graph(display_countries, per_day_cum,
         'data': traces,
         'layout': dict(
             xaxis={'title': 'Date'},
-            yaxis={'title': 'Deaths', 'type': 'linear'},
+            yaxis={'title': 'Deaths', 'type': 'linear' if lin_log == 'lin' else 'log'},
             margin={'l': 40, 'b': 40, 't': 10, 'r': 0},
             hovermode='closest',
             legend={'x': 0, 'y': 1}
@@ -202,8 +193,9 @@ def update_graph(display_countries, per_day_cum,
     Output('log-log-graphic', 'figure'),
     [Input('display-country', 'value'),
      Input('deaths-cases', 'value'),
+     Input('lin-log-2', 'value'),
      Input('date-range-slider', 'value')])
-def update_log_log_graph(display_countries, deaths_cases, day_range):
+def update_log_log_graph(display_countries, deaths_cases, lin_log, day_range):
 
     #Get date range
     #min_d = cases_df.loc[day_range[0], 'Date']
@@ -242,8 +234,8 @@ def update_log_log_graph(display_countries, deaths_cases, day_range):
     return {
         'data': traces,
         'layout': dict(
-            xaxis={'title': 'Date', 'type': 'log'},
-            yaxis={'title': 'Deaths', 'type': 'log'},
+            xaxis={'title': 'Date', 'type': 'linear' if lin_log == 'lin' else 'log'},
+            yaxis={'title': 'Deaths', 'type': 'linear' if lin_log == 'lin' else 'log'},
             margin={'l': 40, 'b': 40, 't': 10, 'r': 0},
             hovermode='closest',
             legend={'x': 0, 'y': 1}
