@@ -116,7 +116,7 @@ app.layout = html.Div([
                 value='lin'
             ),
             dcc.Markdown(''' 
-
+            
                             **Per Day or Cumulative**'''),
             dcc.RadioItems(
                 id='per-day-cum',
@@ -130,6 +130,23 @@ app.layout = html.Div([
         style={'width': '30%', 'float': 'right', 'display': 'inline-block'})
     ]),
 
+    dcc.Slider(
+        id='days-since-slider',
+        min=0,
+        max=days_since,
+        step=1,
+        value=30,
+    ),
+    html.Div(id='days-since-text'),
+    dcc.RangeSlider(
+        id='date-range-slider',
+        min=0,
+        max=days_since,
+        dots=False,
+        step=1,
+        value=[0, days_since],
+        updatemode='drag'
+    ),
     html.Div(id='date-range-text'),
     dcc.Graph(id='indicator-graphic', config={'displayModeBar': False}),
     dcc.Graph(id='log-log-graphic', config={'displayModeBar': False})
