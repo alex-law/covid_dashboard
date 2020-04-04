@@ -95,8 +95,6 @@ app.layout = html.Div([
         style={'width': '45%', 'display': 'inline-block'})
     ]),
 
-    dcc.Graph(id='indicator-graphic', config={'displayModeBar': False}),
-    dcc.Graph(id='log-log-graphic', config={'displayModeBar': False}),
     dcc.RangeSlider(
         id='date-range-slider',
         min=0,
@@ -106,7 +104,11 @@ app.layout = html.Div([
         value=[0, days_since],
         updatemode='drag'
     ),
-    dcc.Markdown(id='date-range-text')
+    dcc.Markdown(id='date-range-text'),
+    dcc.Graph(id='indicator-graphic', config={'displayModeBar': False}),
+    dcc.Graph(id='log-log-graphic', config={'displayModeBar': False}),
+    dcc.Markdown('''[Source code](https://github.com/alex-law/covid_dashboard "GitHub")'''),
+    dcc.Markdown('''[Thanks to Minute Physics](https://www.youtube.com/watch?v=54XLXg4fYsc "Minute Physics")''')
 ])
 
 @app.callback(
@@ -158,7 +160,7 @@ def update_graph(display_countries, per_day_cum,
                 text="{} {}".format(country,option),
                 mode='lines+markers',
                 marker={
-                    'size': 15,
+                    'size': 7,
                     'opacity': 0.7,
                     'line': {'width': 0.5, 'color': 'white'}
                 },
@@ -212,7 +214,7 @@ def update_log_log_graph(display_countries, deaths_cases, day_range):
                 name="{} {}".format(country,option),
                 option="{} {}".format(country,option),
                 marker={
-                    'size': 10,
+                    'size': 7,
                     'opacity': 0.7,
                     'line': {'width': 0.5, 'color': 'white'}
                 },
