@@ -143,12 +143,12 @@ def update_output(value):
      Input('per-day-cum', 'value'),
      Input('lin-log', 'value'),
      Input('deaths-cases', 'value'),
-     Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date')])
+     Input('date-range-slider', 'value')])
 def update_graph(display_countries, per_day_cum,
-                 lin_log, deaths_cases, min_d, max_d):
+                 lin_log, deaths_cases, day_range):
 
-    
+    min_d = cases_df.loc[day_range[0], 'Date']
+    max_d = cases_df.loc[day_range[1], 'Date']
     #Drop out of range dates.
     deaths_drop_index = deaths_df[(deaths_df['Date'] < min_d) | (deaths_df['Date'] > max_d)].index
     cases_drop_index = cases_df[(cases_df['Date'] < min_d) | (cases_df['Date'] > max_d)].index
