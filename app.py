@@ -92,20 +92,7 @@ app.layout = html.Div([
                 value='cumulative'
             )
         ],
-        style={'width': '30%', 'display': 'inline-block'}),
-
-        html.Div([
-            dcc.Markdown('''**Graph 2**'''),
-            dcc.RadioItems(
-                id='lin-log-2',
-                options=[
-                    {'label': 'Linear', 'value': 'lin'},
-                    {'label': 'Logarithmic', 'value': 'log'}
-                ],
-                value='log'
-            )
-        ],
-        style={'width': '30%', 'float': 'right', 'display': 'inline-block'})
+        style={'width': '30%', 'display': 'inline-block'})
     ]),
 
     html.Br(),
@@ -193,9 +180,8 @@ def update_graph(display_countries, per_day_cum,
     Output('log-log-graphic', 'figure'),
     [Input('display-country', 'value'),
      Input('deaths-cases', 'value'),
-     Input('lin-log-2', 'value'),
      Input('date-range-slider', 'value')])
-def update_log_log_graph(display_countries, deaths_cases, lin_log, day_range):
+def update_log_log_graph(display_countries, deaths_cases, day_range):
 
     #Get date range
     #min_d = cases_df.loc[day_range[0], 'Date']
@@ -234,8 +220,8 @@ def update_log_log_graph(display_countries, deaths_cases, lin_log, day_range):
     return {
         'data': traces,
         'layout': dict(
-            xaxis={'title': 'Date', 'type': 'linear' if lin_log == 'lin' else 'log'},
-            yaxis={'title': 'Deaths', 'type': 'linear' if lin_log == 'lin' else 'log'},
+            xaxis={'title': 'Date', 'type': 'log'},
+            yaxis={'title': 'Deaths', 'type': 'log'},
             margin={'l': 40, 'b': 40, 't': 10, 'r': 0},
             hovermode='closest',
             legend={'x': 0, 'y': 1}
