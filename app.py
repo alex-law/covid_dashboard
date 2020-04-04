@@ -2,31 +2,40 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import pandas as pd
+import io
+import requests
 
 from app_functions import *
 
-import pandas as pd
+
+git_url="https://raw.githubusercontent.com/alex-law/covid_dashboard/master/"
+cases_url = git_url + 'covid_cases.csv'
+deaths_url = git_url + 'covid_deaths.csv'
+cases_raw = requests.get(cases_url).content
+cases_df = pd.read_csv(io.StringIO(cases_raw.decode('utf-8')))
+deaths_raw = requests.get(deaths_url).content
+deaths_df = pd.read_csv(io.StringIO(cases_raw.decode('utf-8')))
 
 #Define web app style.
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 #Get data frames.
-deaths_df = pd.read_csv('covid_deaths.csv')
-cases_df = pd.read_csv('covid_cases.csv')
 deaths_df = formatdf(deaths_df)
 cases_df = formatdf(cases_df)
 deaths_df['Type'] = 'Deaths'
 cases_df['Type'] = 'Cases'
 
+#Get per day column
+countries = getCountries(cases_df)
+deaths_df = getPerDayWeek(deaths_df, countries)
+cases_df = getPerDayWeek(cases_df, countries)
+
 #Get input options.
 countries = getCountries(cases_df)
 min_date, max_date = getMinMaxDate(cases_df)
 days_since = getCovidDays(min_date, max_date)
-
-#Get per day column
-deaths_df = getPerDayWeek(deaths_df, countries)
-cases_df = getPerDayWeek(cases_df, countries)
 
 #Define webpage layout
 app.layout = html.Div([
@@ -94,7 +103,7 @@ app.layout = html.Div([
         ],
         style={'width': '45%', 'display': 'inline-block'})
     ]),
-
+    html.Br(),
     dcc.RangeSlider(
         id='date-range-slider',
         min=0,
