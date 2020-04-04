@@ -147,6 +147,7 @@ def update_output(value):
 def update_graph(display_countries, per_day_cum,
                  lin_log, deaths_cases, day_range):
 
+    #Get date range
     min_d = cases_df.loc[day_range[0], 'Date']
     max_d = cases_df.loc[day_range[1], 'Date']
     #Drop out of range dates.
@@ -154,8 +155,6 @@ def update_graph(display_countries, per_day_cum,
     cases_drop_index = cases_df[(cases_df['Date'] < min_d) | (cases_df['Date'] > max_d)].index
     deaths_dff = deaths_df.drop(deaths_drop_index)
     cases_dff = cases_df.drop(cases_drop_index)
-    #deaths_dff['Datetime'] = pd.to_datetime(deaths_dff['Date'])
-    #cases_dff['Datetime'] = pd.to_datetime(cases_dff['Date'])
 
     if per_day_cum == 'per_day':
         y_axis = 'Diff'
@@ -199,16 +198,12 @@ def update_graph(display_countries, per_day_cum,
     Output('log-log-graphic', 'figure'),
     [Input('display-country', 'value'),
      Input('deaths-cases', 'value'),
-     Input('days-since-slider', 'value')])
-def update_log_log_graph(display_countries, deaths_cases, days_since):
-    
-    #Drop out of range dates.
-    #deaths_drop_index = deaths_df[(deaths_df['Date'] < min_d) | (deaths_df['Date'] > max_d)].index
-    #cases_drop_index = cases_df[(cases_df['Date'] < min_d) | (cases_df['Date'] > max_d)].index
-    #deaths_dff = deaths_df.drop(deaths_drop_index)
-    #cases_dff = cases_df.drop(cases_drop_index)
-    #deaths_dff['Datetime'] = pd.to_datetime(deaths_dff['Date'])
-    #cases_dff['Datetime'] = pd.to_datetime(cases_dff['Date'])
+     Input('date-range-slider', 'value')])
+def update_log_log_graph(display_countries, deaths_cases, day_range):
+
+    #Get date range
+    #min_d = cases_df.loc[day_range[0], 'Date']
+    #max_d = cases_df.loc[day_range[0], 'Date']
 
     traces = []
     for option in deaths_cases:
@@ -225,10 +220,11 @@ def update_log_log_graph(display_countries, deaths_cases, days_since):
             country_df.sort_values(by=['Date'], inplace=True)
             country_df.reset_index(drop=True, inplace=True)
             country_df.reset_index(inplace=True)
+            country_df_range = country_df[day_range[0]:day_range[1]]
 
             traces.append(dict(
-                x=country_df.head(days_since)['Value'],
-                y=country_df.head(days_since)['Week'],
+                x=country_df_range['Value'],
+                y=country_df_range['Week'],
                 text=option,
                 mode='lines+markers',
                 range=[min_value, country_df['Value'].max()],
