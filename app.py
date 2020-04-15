@@ -13,9 +13,9 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 #Get dataframes from GitHub
-#git_url="https://raw.githubusercontent.com/alex-law/covid_dashboard/master/"
-#cases_df = getDfFromUrl(git_url, 'covid_cases_cleaned.csv')
-#deaths_df = getDfFromUrl(git_url, 'covid_deaths_cleaned.csv')
+git_url="https://raw.githubusercontent.com/alex-law/covid_dashboard/master/"
+cases_df = getDfFromUrl(git_url, 'covid_cases_cleaned.csv')
+deaths_df = getDfFromUrl(git_url, 'covid_deaths_cleaned.csv')
 
 cases_df = pd.read_csv('covid_cases_cleaned.csv')
 deaths_df = pd.read_csv('covid_deaths_cleaned.csv')
