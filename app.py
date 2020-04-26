@@ -20,6 +20,9 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 cases_df = pd.read_csv('covid_cases_cleaned.csv')
 deaths_df = pd.read_csv('covid_deaths_cleaned.csv')
 
+cases_df = pd.read_csv('covid_cases_cleaned.csv')
+deaths_df = pd.read_csv('covid_deaths_cleaned.csv')
+
 #Get input options.
 countries = getCountries(cases_df)
 min_date, max_date = getMinMaxDate(cases_df)
