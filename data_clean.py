@@ -11,6 +11,10 @@ def formatdf(df):
     #Sum entries with same date and country (but different region).
     df_m = df_m.groupby(['Country/Region', 'Date']).sum()
     df_m.reset_index(inplace=True)
+    #Format date to be datetime
+    df_m.Date = pd.to_datetime(df_m.Date)
+    #Sort by country then date
+    df_m = df_m.sort_values(['Country/Region', 'Date'], ascending=[True, True])
     return df_m
 
 def getCountries(cases_df):

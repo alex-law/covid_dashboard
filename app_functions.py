@@ -11,6 +11,8 @@ def getMinMaxDate(cases_df):
 
 def getCovidDays(min_date, max_date):
     #Get the number of days since covid start.
+    print('min date: ', min_date)
+    print('max date: ', max_date)
     min_datetime = datetime.strptime(min_date, '%Y-%m-%d')
     max_datetime = datetime.strptime(max_date, '%Y-%m-%d')
     time_delta = max_datetime - min_datetime
